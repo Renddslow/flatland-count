@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      #app {
+        width: 100%;
+      }
+
+      #cvs {
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <canvas id="cvs"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("cvs");
+        const context = canvas.getContext("2d");
+
+        canvas.width = 1920;
+        canvas.height = 1080;
+
+        function render(count) {
+          context.save();
+
+          const grd = context.createLinearGradient(0, 0, 1920, 1080);
+          grd.addColorStop(0, "#4776E6");
+          grd.addColorStop(1, "#8E54E9");
+          context.fillStyle = grd;
+          context.fillRect(0, 0, 1920, 1080);
+
+          context.font = "900 300px -apple-system, BlinkMacSystemFont, sans-serif";
+          context.fillStyle = "#fff";
+          context.textAlign = "center";
+          context.fillText(count, 950, 640);
+
+          context.restore();
+        }
+
+        fetch("https://sheetdb.io/api/v1/4vwar2g3en491", {
+          headers: {
+            authorization: `Basic ${btoa("0j9mc18z:uet9au0refgnuthxwe54")}`
+          }
+        })
+          .then(d => d.json())
+          .then(d => {
+            const count = d.reduce((acc, { selections }) => {
+              acc += selections.split(",").length;
+              return acc;
+            }, 0);
+            const fmt = new Intl.NumberFormat("en-US", {
+              style: "decimal"
+            });
+            render(fmt.format(count));
+          });
+    </script>
+  </body>
+</html>
